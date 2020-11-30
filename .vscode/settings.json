@@ -1,0 +1,10 @@
+{
+    "Lua.diagnostics.disable": [
+        "undefined-global",
+        "lowercase-global",
+        "undefined-doc-name",
+        "redefined-local"
+    ],
+    "editor.fontSize": 16,
+    "git.ignoreLimitWarning": true
+}
