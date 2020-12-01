@@ -14,7 +14,7 @@ local stop = true
 function Player:new(x, y, img)
     Player.super.new(self, x, y, img)
 
-    for i = 0, 2 do
+    for i = 0, 3 do
         for j = 0, 3 do
             lume.push(frames, love.graphics.newQuad(
                 1 + j * (Entity.size + 1),
@@ -26,6 +26,7 @@ function Player:new(x, y, img)
         end
     end
 end
+local stop
 
 function Player:update(dt)
     self:getInput(dt)
@@ -44,31 +45,98 @@ function Player:draw()
     )
 end
 
+local lastkey
+local str_k
 function Player:getInput(dt)
     local key = love.keyboard.isDown
 
     local x = self.x
     local y = self.y
 
+    if
+        not key("down") and not key("left") and
+        not key("right") and not key("up")
+    then
+        stop = true
+        frame_Current = frame_Initial + 1
+        if frame_Initial == 2 then
+            frame_Current = 1
+        elseif frame_Initial == 14 then
+            frame_Current = 13
+        end
+        return
+    end
+
     if key("down") then
-        frame_Initial = 2
-        frame_Current = frame_Initial
+        str_k = "down"
         frame_Final = 4
+        frame_Initial = 2
+
+        if lastkey ~= str_k then
+            frame_Current = frame_Initial
+            lastkey = str_k
+        end
+
         y = y + 4 * self.vel * dt
 
+        if stop then
+            frame_Current = frame_Initial + 1
+            stop = false
+        end
+        
     elseif key("right") then
-        frame_Initial = 5
-        frame_Current = frame_Initial
+        str_k = "right"
         frame_Final = 9
+        frame_Initial = 5
+        
+        if lastkey ~= str_k then
+            frame_Current = frame_Initial
+            lastkey = str_k
+        end
+
         x = x + 4 * self.vel * dt
-    
+
+        if stop then
+            frame_Current = frame_Initial + 1
+            stop = false
+        end
+        
     elseif key("left") then
+        str_k = "left"
         frame_Initial = 9
-        frame_Current = frame_Initial
         frame_Final = 13
+
+        if lastkey ~= str_k then
+            frame_Current = frame_Initial
+            lastkey = str_k
+        end
+
         x = x - 4 * self.vel * dt
-    else
+
+        if stop then
+            frame_Current = frame_Initial + 1
+            stop = false
+        end
+
+    elseif key("up") then
+        str_k = "up"
+        frame_Initial = 14
+        frame_Final = 16
+
+        if lastkey ~= str_k then
+            frame_Current = frame_Initial
+            lastkey = str_k
+        end
+
+        y = y - 4 * self.vel * dt
+
+        if stop then
+            frame_Current = frame_Initial + 1
+            stop = false
+        end
     end
+
+    
 
     self.y = y
     self.x = x
