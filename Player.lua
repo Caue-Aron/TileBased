@@ -4,12 +4,15 @@ Entity = require "Entity"
 
 ---@class Player
 Player = Entity:extend()
-local frame_Vel = 2.5
+
+local frame_Vel = 3
 local frame_Initial = 1
 local frame_Final = 1
 local frame_Current = 1
 local frames = {}
-local stop = true
+local lastkey
+local str_k
+local presedkey = false
 
 function Player:new(x, y, img)
     Player.super.new(self, x, y, img)
@@ -25,16 +28,21 @@ function Player:new(x, y, img)
             )) 
         end
     end
-end
-local stop
 
-function Player:update(dt)
+    self.vel = 20
+end
+
+function Player:update(dt, room)
+    Player.super.update(self, dt, room)
+
     self:getInput(dt)
 
     frame_Current = frame_Current + frame_Vel * dt
     if frame_Current >= frame_Final then
         frame_Current = frame_Initial
     end
+
+    self:colision(room)
 end
 
 function Player:draw()
@@ -45,18 +53,28 @@ function Player:draw()
     )
 end
 
-local lastkey
-local str_k
+
+---------
+-- se if the player pressed any key
+function love.keypressed(key) presedkey = key end
+
+function love.keyreleased(key, uni)
+    if presedkey == key then
+        presedkey = false
+    else
+    end
+end
+
+------
+
 function Player:getInput(dt)
     local key = love.keyboard.isDown
+    local px = 3
 
     local x = self.x
     local y = self.y
 
-    if
-        not key("down") and not key("left") and
-        not key("right") and not key("up")
-    then
+    if not presedkey then
         stop = true
         frame_Current = frame_Initial + 1
         if frame_Initial == 2 then
@@ -73,11 +91,11 @@ function Player:getInput(dt)
         frame_Initial = 2
 
         if lastkey ~= str_k then
-            frame_Current = frame_Initial
+            frame_Current = frame_Initial + 1
             lastkey = str_k
         end
 
-        y = y + 4 * self.vel * dt
+        y = y + px * self.vel * dt
 
         if stop then
             frame_Current = frame_Initial + 1
@@ -90,11 +108,11 @@ function Player:getInput(dt)
         frame_Initial = 5
         
         if lastkey ~= str_k then
-            frame_Current = frame_Initial
+            frame_Current = frame_Initial + 1
             lastkey = str_k
         end
 
-        x = x + 4 * self.vel * dt
+        x = x + px * self.vel * dt
 
         if stop then
             frame_Current = frame_Initial + 1
@@ -107,11 +125,11 @@ function Player:getInput(dt)
         frame_Final = 13
 
         if lastkey ~= str_k then
-            frame_Current = frame_Initial
+            frame_Current = frame_Initial + 1
             lastkey = str_k
         end
 
-        x = x - 4 * self.vel * dt
+        x = x - px * self.vel * dt
 
         if stop then
             frame_Current = frame_Initial + 1
@@ -124,11 +142,11 @@ function Player:getInput(dt)
         frame_Final = 16
 
         if lastkey ~= str_k then
-            frame_Current = frame_Initial
+            frame_Current = frame_Initial + 1
             lastkey = str_k
         end
 
-        y = y - 4 * self.vel * dt
+        y = y - px * self.vel * dt
 
         if stop then
             frame_Current = frame_Initial + 1
